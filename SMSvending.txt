@@ -1,0 +1,50 @@
+//SMS Vending machine
+//Code V3.1
+//Thomas King 6/18/2012
+int count = 10;//count (what to fill the machine to each time
+int low=0;
+int empty=0;
+
+void setup() {
+  Serial.begin(19200);
+  pinMode(2, INPUT);//button that is pressed when the condom is dispensed
+}
+
+void loop() {
+  int sensorValue = digitalRead(2);
+  if (sensorValue==1)
+    {
+      count --;
+      Serial.print("\r");
+      delay(1000);                    //Wait while modem responds
+      Serial.print("AT+CMGF=1\r");    //set to text mode
+      delay(1000);
+      Serial.print("AT+CSCA=\"+13123149810\"\r");  //Setting for the SMS Message center number
+      delay(1000);                                                                       
+      Serial.print("AT+CMGS=\"+16038017161\"\r");    //Set target number (data collection)
+      delay(1000);
+      Serial.print("An item has been purchaced!\r");   //The text for the message
+      delay(1000);
+      Serial.write(26);
+      while(sensorValue == 1)                          //wait for button to be released
+      {int sensorValue = digitalRead(2);}
+    }
+    if(count==3&&low==0)
+    {
+      low++;//will not send low message more than once (until reset)
+      Serial.print("\r");
+      delay(1000);                    //Wait while modem responds
+      Serial.print("AT+CMGF=1\r");    //set to text mode
+      delay(1000);
+      Serial.print("AT+CSCA=\"+13123149810\"\r");  //Setting for the SMS Message center number
+      delay(1000);                                  
+      Serial.print("AT+CMGS=\"+16038017161\"\r");    //Set target number (Refill)
+      delay(1000);
+      Serial.print("LOW!\r");   //The text for the message(LOW WANRNING)      delay(1000);
+      Serial.write(26);
+    }
+      
+ 
+}
+
+
